@@ -43,7 +43,7 @@ bool is_port_used(int port) {
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(port);
+    addr.sin_port = htons((uint16_t)port);
 
     if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         close(sockfd);
@@ -55,6 +55,12 @@ bool is_port_used(int port) {
 }
 
 void scan_port_range(Range r) {
+    if (r.bottom > r.top) {
+        fprintf(stdout, "bottom: %d cannot be greater than top: %d\n", r.bottom,
+                r.top);
+        return;
+    }
+
     for (int i = r.bottom; i < r.top; ++i) {
         if (is_port_used(i)) {
             printf("the port: %d, is used\n", i);
