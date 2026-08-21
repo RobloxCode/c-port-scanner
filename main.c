@@ -1,8 +1,34 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+typedef struct {
+    int top;
+    int bottom;
+} Range;
+
+bool is_port_used(int port);
+void scan_port_range(Range r);
+
+int main(int argc, char **argv) {
+    if (argc != 3) {
+        fprintf(stderr, "USAGE: ./a [bottom] [top]\n");
+        return EXIT_FAILURE;
+    }
+
+    int bottom = 0;
+    int top = 0;
+
+    bottom = (int)strtol(argv[1], NULL, 10);
+    top = (int)strtol(argv[2], NULL, 10);
+
+    scan_port_range((Range){top, bottom});
+
+    return EXIT_SUCCESS;
+}
 
 bool is_port_used(int port) {
     int sockfd;
@@ -28,13 +54,12 @@ bool is_port_used(int port) {
     return false;
 }
 
-int main(void) {
-    int port = 80;
-    if (is_port_used(port)) {
-        printf("computer connected to port: %d\n", port);
-    } else {
-        printf("computer not connected to port: %d\n", port);
+void scan_port_range(Range r) {
+    for (int i = r.bottom; i < r.top; ++i) {
+        if (is_port_used(i)) {
+            printf("the port: %d, is used\n", i);
+        } else {
+            printf("the port: %d, is not used\n", i);
+        }
     }
-
-    return 0;
 }
