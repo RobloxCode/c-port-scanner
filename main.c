@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
-bool is_connected(int port) {
+bool is_port_used(int port) {
     int sockfd;
     struct sockaddr_in addr;
 
@@ -30,7 +30,7 @@ bool is_connected(int port) {
 
 int main(void) {
     int port = 80;
-    if (is_connected(port)) {
+    if (is_port_used(port)) {
         printf("computer connected to port: %d\n", port);
     } else {
         printf("computer not connected to port: %d\n", port);
